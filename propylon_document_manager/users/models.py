@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db.models import CharField, EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from propylon_document_manager.users.managers import UserManager
 
 
-class User(AbstractUser):
+class User(AbstractUser, PermissionsMixin):
     """
     Default custom user model for Propylon Document Manager.
     If adding fields that need to be filled at user signup,
@@ -21,7 +21,7 @@ class User(AbstractUser):
     username = None  # type: ignore
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['name']
 
     objects = UserManager()
 

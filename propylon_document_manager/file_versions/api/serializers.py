@@ -5,4 +5,5 @@ from file_versions.models import FileVersion
 class FileVersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileVersion
-        fields = "__all__"
+        fields = ['file_name', 'version_number', 'file', 'uploaded_by']
+        read_only_fields = ['uploaded_by', 'content_hash']
