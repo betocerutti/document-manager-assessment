@@ -1,32 +1,45 @@
 import hashlib
 
-from django.shortcuts import render
+from django.utils.translation import gettext_lazy as _
 
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.authtoken.models import Token
-
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated, BasePermission
 from file_versions.models import FileVersion
 from .serializers import FileVersionSerializer
 
+
+class IsOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.owner == request.user
+
 class FileVersionViewSet(ModelViewSet):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsOwner]
     serializer_class = FileVersionSerializer
     queryset = FileVersion.objects.all()
     lookup_field = "id"
 
+    def get_queryset(self):
+        return FileVersion.objects.filter(owner=self.request.user)
+
     def perform_create(self, serializer):
-        content_hash = self.get_content_hash(serializer.validated_data['file'])
-        user = self.get_user_from_token(self)
-        serializer.save(uploaded_by=user, content_hash=content_hash)
+
+        content_hash = self.get_content_hash(
+            serializer.validated_data['file'])
+        owner = self.get_user_from_token(self)
+
+        serializer.save(owner=owner, 
+                        content_hash=content_hash)
 
     @staticmethod
     def get_user_from_token(self):
         """
         Get the user from the token
         """
-        token = self.request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        token = self.request.META.get(
+            'HTTP_AUTHORIZATION').split(' ')[1]
         return Token.objects.get(key=token).user
 
 
