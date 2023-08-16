@@ -1,11 +1,13 @@
 import hashlib
 
 from django.utils.translation import gettext_lazy as _
+from django.db.utils import IntegrityError
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework import serializers
 from file_versions.models import FileVersion
 from .serializers import FileVersionSerializer
 
@@ -32,6 +34,7 @@ class FileVersionViewSet(ModelViewSet):
 
         serializer.save(owner=owner, 
                         content_hash=content_hash)
+  
 
     @staticmethod
     def get_user_from_token(self):

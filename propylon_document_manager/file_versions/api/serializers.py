@@ -18,14 +18,27 @@ class FileVersionSerializer(serializers.ModelSerializer):
             'owner', 
             'content_hash']        
 
+
     def save(self, **kwargs):
-        # check UniqueTogetherValidator
-        try:
-            super().save(**kwargs)
-        except IntegrityError as e:
-            raise serializers.ValidationError(
-                _('The combination of file name and version number must be unique.'))
-        except Exception as e:
-            raise serializers.ValidationError(
-                _('An error occurred while saving the file version.'))
         
+        # check if file already exists
+        try:
+            file_version = FileVersion.objects.get(
+                file_name=self.validated_data['file_name'],
+                owner=self.validated_data['owner'])
+        except FileVersion.DoesNotExist:
+            file_version = None
+            
+        if file_version:
+            # check if file content is the same
+            if file_version.content_hash == self.validated_data['content_hash']:
+                raise serializers.ValidationError(
+                    _('File content is the same as the previous version.'))
+            else:
+                # increment version number
+                self.validated_data['version_number'] = file_version.version_number + 1
+                file_version = super().save(**kwargs)
+        else:
+            file_version = super().save(**kwargs)
+        
+        return file_version

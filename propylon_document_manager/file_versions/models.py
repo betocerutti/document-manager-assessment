@@ -6,7 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 def validate_path(value):
     """
-    Validate the path format, it must start with '/' and end with file extension
+    Validate the path format, it must start with '/' and 
+    end with file extension
     Some examples:
         /path/to/file.txt
         /images/photo.jpg
