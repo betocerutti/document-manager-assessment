@@ -45,8 +45,7 @@ class FileVersionTestCase(TestCase):
                                      'file': uploaded_file},
                                      HTTP_AUTHORIZATION=self.HTTP_AUTHORIZATION)
         
-        self.assertEqual(response.status_code, 201)
-    
+        self.assertEqual(response.status_code, 201)    
 
     def test_auth_user_can_upload_new_file_version(self):
         """
@@ -93,52 +92,6 @@ class FileVersionTestCase(TestCase):
         # check that the file has two versions
         file_versions = FileVersion.objects.filter(file_name='/path/to/file.txt')
         self.assertEqual(file_versions.count(), 2)
-
-    # def test_user_cannot_upload_same_file_twice(self):
-    #     """
-    #     Test that a user cannot upload the same file twice
-    #     """
-    #     file_content = b'This is the content of the file.'
-    #     uploaded_file = SimpleUploadedFile("sample.txt", file_content)
-    #     response = self.client.post('/api/file_versions/', 
-    #                                 {'file_name': '/path/to/file.txt', 
-    #                                  'version_number': 1, 
-    #                                  'file': uploaded_file},
-    #                                  HTTP_AUTHORIZATION=self.HTTP_AUTHORIZATION)
-        
-    #     self.assertEqual(response.status_code, 201)
-
-    #     # try to upload the same file again
-    #     response = self.client.post('/api/file_versions/', 
-    #                                 {'file_name': '/path/to/file.txt', 
-    #                                  'version_number': 1, 
-    #                                  'file': uploaded_file},
-    #                                  HTTP_AUTHORIZATION=self.HTTP_AUTHORIZATION)
-        
-    #     self.assertEqual(response.status_code, 400)
-
-    # def test_user_cannot_upload_same_file_with_different_version_number(self):
-    #     """
-    #     Test that a user cannot upload the same file with a different version number
-    #     """
-    #     file_content = b'This is the content of the file.'
-    #     uploaded_file = SimpleUploadedFile("sample.txt", file_content)
-    #     response = self.client.post('/api/file_versions/', 
-    #                                 {'file_name': '/path/to/file.txt', 
-    #                                  'version_number': 1, 
-    #                                  'file': uploaded_file},
-    #                                  HTTP_AUTHORIZATION=self.HTTP_AUTHORIZATION)
-        
-    #     self.assertEqual(response.status_code, 201)
-
-    #     # try to upload the same file again with a different version
-    #     response = self.client.post('/api/file_versions/', 
-    #                                 {'file_name': '/path/to/file.txt', 
-    #                                  'version_number': 2, 
-    #                                  'file': uploaded_file},
-    #                                  HTTP_AUTHORIZATION=self.HTTP_AUTHORIZATION)
-        
-    #     self.assertEqual(response.status_code, 400)
     
     def test_auth_user_can_only_see_their_own_files(self):
         """
@@ -174,7 +127,6 @@ class FileVersionTestCase(TestCase):
             HTTP_AUTHORIZATION=another_HTTP_AUTHORIZATION)
 
         self.assertEqual(response_404.status_code, 404)
-
 
     def tearDown(self) -> None:
         # delete the file from the file system

@@ -12,6 +12,12 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     slug_field = "id"
     slug_url_kwarg = "id"
+    
+    def get(self, request, *args, **kwargs):
+        # when called from the "me" url, set the id to the current user's id
+        if "id" not in kwargs:
+            kwargs["id"] = self.request.user.id
+        return super().get(request, *args, **kwargs)
 
 
 user_detail_view = UserDetailView.as_view()

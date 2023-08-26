@@ -34,7 +34,6 @@ class FileVersionViewSet(ModelViewSet):
 
         serializer.save(owner=owner, 
                         content_hash=content_hash)
-  
 
     @staticmethod
     def get_user_from_token(self):

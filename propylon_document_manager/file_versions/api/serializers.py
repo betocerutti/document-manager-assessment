@@ -21,17 +21,16 @@ class FileVersionSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         
-        # check if file already exists
         try:
             file_version = FileVersion.objects.get(
-                file_name=self.validated_data['file_name'],
-                owner=self.validated_data['owner'])
+                file_name=kwargs['content_hash'],
+                owner=kwargs['owner'])
         except FileVersion.DoesNotExist:
             file_version = None
             
-        if file_version:
+        if file_version:    
             # check if file content is the same
-            if file_version.content_hash == self.validated_data['content_hash']:
+            if file_version.content_hash == kwargs['content_hash']:
                 raise serializers.ValidationError(
                     _('File content is the same as the previous version.'))
             else:

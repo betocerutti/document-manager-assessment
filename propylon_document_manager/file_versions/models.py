@@ -1,4 +1,5 @@
 import re, os
+from typing import Any
 
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -20,6 +21,22 @@ def validate_path(value):
         raise ValidationError(message)
 
     
+# class FileProfile(models.Model):
+#     name = models.fields.CharField(max_length=512, 
+#                                    validators=[validate_path])
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     owner = models.ForeignKey('users.User',on_delete=models.CASCADE)
+
+    
+#     def __str__(self):
+#         return self.name
+    
+
+#     class Meta:
+#         ordering = ('name',)
+#         verbose_name = 'File Profile'
+
+
 class FileVersion(models.Model):
     file_name = models.fields.CharField(max_length=512, 
                                         validators=[validate_path])
